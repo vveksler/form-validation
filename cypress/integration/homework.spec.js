@@ -63,8 +63,8 @@ describe('Интеграционные тесты', () => {
   });
   describe('Валидация правильной формы', () => {
     it('Показывает одобрение Бонда, если все верно', () => {
-      cy.get('.t-input-firstname').type('james');
-      cy.get('.t-input-lastname').type('bond');
+      cy.get('.t-input-firstname').type('James');
+      cy.get('.t-input-lastname').type('Bond');
       cy.get('.t-input-password').type('007');
       cy.get('.t-submit').click();
 
