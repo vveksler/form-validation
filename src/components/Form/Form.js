@@ -72,25 +72,48 @@ export default class Form extends Component {
   handleChange = e => {
     const { name, value } = e.target;
 
-    this.setState({
+    this.setState(({ errors, values }) => ({
       errors: {
-        ...this.state.errors,
+        ...errors,
         firstname: '',
         lastname: '',
         password: ''
       },
-      values: { ...this.state.values, [name]: value }
-    });
+      values: { ...values, [name]: value }
+    }));
   };
 
-  render() {
-    const { values, errors, isSubmited } = this.state;
+  get fields() {
+    const { values, errors } = this.state;
 
     const titles = {
       firstname: 'Имя',
       lastname: 'Фамилия',
       password: 'Пароль'
     };
+
+    return Object.keys(values).map(value => (
+      <p className="field" key={value}>
+        <label className="field__label" htmlFor={value}>
+          <span className="field-label">{titles[value]}</span>
+        </label>
+        <input
+          onChange={this.handleChange}
+          id={value}
+          name={value}
+          value={values[value]}
+          type={value === 'password' ? 'password' : 'text'}
+          className={`field__input field-input t-input-${value}`}
+        />
+        <span className={`field__error field-error t-error-${value}`}>
+          {errors[value]}
+        </span>
+      </p>
+    ));
+  }
+
+  render() {
+    const { isSubmited } = this.state;
 
     if (isSubmited)
       return (
@@ -103,24 +126,7 @@ export default class Form extends Component {
       <div className="app-container">
         <form className="form" onSubmit={this.handleFormSubmit}>
           <h1>Введите свои данные, агент</h1>
-          {Object.keys(values).map(value => (
-            <p className="field" key={value}>
-              <label className="field__label" htmlFor={value}>
-                <span className="field-label">{titles[value]}</span>
-              </label>
-              <input
-                onChange={this.handleChange}
-                id={value}
-                name={value}
-                value={values[value]}
-                type={value === 'password' ? 'password' : 'text'}
-                className={`field__input field-input t-input-${value}`}
-              />
-              <span className={`field__error field-error t-error-${value}`}>
-                {errors[value]}
-              </span>
-            </p>
-          ))}
+          {this.fields}
           <div className="form__buttons">
             <input
               type="submit"
